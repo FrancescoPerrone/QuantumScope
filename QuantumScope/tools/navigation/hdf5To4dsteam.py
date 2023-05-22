@@ -142,7 +142,7 @@ import argparse
 from QuantumScope.tools.navigation.hdf5To4dsteam import get_file_list, select_file, explore_and_load_4DSTEM_data, visualize_4DSTEM_data
 
 
-def main(filepath=None, file_extensions=None):
+def main(filepath, file_extensions):
     while True:
         try:
             if filepath is None:
