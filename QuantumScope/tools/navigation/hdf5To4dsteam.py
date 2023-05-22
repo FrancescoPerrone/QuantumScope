@@ -3,7 +3,6 @@ import fnmatch
 import h5py
 import py4DSTEM
 import numpy as np
-import argparse
 
 def get_file_list(filepath: str, file_extensions: list = ['*.h5', '*.hdf5']) -> list:
     """
@@ -139,7 +138,7 @@ def select_file(file_list):
     if file_index == -1:
         return None
     return file_list[file_index]
-
+        
 def main():
     while True:
         try:
@@ -159,18 +158,31 @@ def main():
             filepath = args.filepath
             file_extensions = args.file_extensions
 
-        file_list = get_file_list(filepath, file_extensions)
-        print('File list:')
-        print(file_list)
-
-        loaded_data = explore_and_load_4DSTEM_data(file_list)
-        if loaded_data == 'change file':
+        # Get list of files
+        try:
+            file_list = get_file_list(filepath, file_extensions)
+            print('File list:')
+            print(file_list)
+        except FileNotFoundError as e:
+            print("Invalid directory. Please try again.")
             continue
 
-        try:
-            visualize_4DSTEM_data(loaded_data)
-        except Exception as e:
-            print(f'An error occurred while trying to visualize the dataset: {e}')
+        # User selects file
+        while True:
+            selected_file = select_file(file_list)
+            if selected_file is None:
+                print("Exiting...")
+                break
+
+            # Load and visualize data for the selected file
+            full_file_path = os.path.join(filepath, selected_file)
+            loaded_data = explore_and_load_4DSTEM_data([full_file_path])  # Pass a list with a single file path
+            if loaded_data == 'change file':
+                continue
+            try:
+                visualize_4DSTEM_data(loaded_data)
+            except Exception as e:
+                print(f'An error occurred while trying to visualize the dataset: {e}')
 
 
 if __name__ == "__main__":
