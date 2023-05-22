@@ -142,6 +142,7 @@ def select_file(file_list):
     return file_list[file_index]
         
 from . import hdf5To4dsteam
+
 def main(filepath=None, file_extensions=None):
     while True:
         try:
@@ -189,4 +190,4 @@ def main(filepath=None, file_extensions=None):
             filepath = None
 
 if __name__ == "__main__":
-    main()
+    main(filepath=None, file_extensions=None)
