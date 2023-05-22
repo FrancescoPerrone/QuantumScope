@@ -140,42 +140,38 @@ def select_file(file_list):
         return None
     return file_list[file_index]
 
-def main(filepath, file_extensions):
+def main():
     while True:
         try:
-            if filepath is None:
-                __IPYTHON__
-                filepath = input("Please enter the path to the directory containing the data files (or 'exit' to quit): ")
-                if filepath.lower() == 'exit':
-                    print("Exiting...")
-                    return
-                file_extensions = input("Please enter the list of file extensions to include (separated by spaces): ").split()
-                if not os.path.isdir(filepath):
-                    raise FileNotFoundError
-            else:
-                if not os.path.isdir(filepath):
-                    print("Invalid directory. Please try again.")
-                    filepath = None
-                    continue
+            __IPYTHON__
+            filepath = input("Please enter the path to the directory containing the data files (or 'exit' to quit): ")
+            if filepath.lower() == 'exit':
+                print("Exiting...")
+                return
+            file_extensions = input("Please enter the list of file extensions to include (separated by spaces): ").split()
+            if not os.path.isdir(filepath):
+                raise FileNotFoundError
+        except NameError:
+            parser = argparse.ArgumentParser(description='Process 4DSTEM data.')
+            parser.add_argument('--filepath', type=str, help='Path to the directory containing the data files.')
+            parser.add_argument('--file_extensions', type=str, nargs='+', help='List of file extensions to include.')
+            args = parser.parse_args()
+            filepath = args.filepath
+            file_extensions = args.file_extensions
 
-            file_list = get_file_list(filepath, file_extensions)
-            print('File list:')
-            print(file_list)
+        file_list = get_file_list(filepath, file_extensions)
+        print('File list:')
+        print(file_list)
 
-            loaded_data = explore_and_load_4DSTEM_data(file_list)
-            if loaded_data == 'change file':
-                continue
+        loaded_data = explore_and_load_4DSTEM_data(file_list)
+        if loaded_data == 'change file':
+            continue
 
-            try:
-                visualize_4DSTEM_data(loaded_data)
-            except Exception as e:
-                print(f'An error occurred while trying to visualize the dataset: {e}')
+        try:
+            visualize_4DSTEM_data(loaded_data)
+        except Exception as e:
+            print(f'An error occurred while trying to visualize the dataset: {e}')
 
-        except (FileNotFoundError, OSError, KeyError) as e:
-            print(e)
-
-        finally:
-            filepath = None
 
 if __name__ == "__main__":
-    main(filepath=None, file_extensions=None)
+    main()
