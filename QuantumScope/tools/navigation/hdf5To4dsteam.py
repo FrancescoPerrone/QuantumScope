@@ -1,11 +1,3 @@
-import os
-import fnmatch
-import h5py
-import py4DSTEM
-import numpy as np
-import argparse
-from .hdf5To4dsteam import get_file_list, select_file, explore_and_load_4DSTEM_data, visualize_4DSTEM_data
-
 def get_file_list(filepath: str, file_extensions: list = ['*.h5', '*.hdf5']) -> list:
     """
     This function returns a sorted list of files in the specified directory that matches any of the specified file extensions.
@@ -140,6 +132,15 @@ def select_file(file_list):
     if file_index == -1:
         return None
     return file_list[file_index]
+
+import os
+import fnmatch
+import h5py
+import py4DSTEM
+import numpy as np
+import argparse
+from QuantumScope.tools.navigation.hdf5To4dsteam import get_file_list, select_file, explore_and_load_4DSTEM_data, visualize_4DSTEM_data
+
 
 def main(filepath=None, file_extensions=None):
     while True:
