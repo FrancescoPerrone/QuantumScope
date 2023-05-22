@@ -141,7 +141,7 @@ def select_file(file_list):
         return None
     return file_list[file_index]
         
-
+from . import hdf5To4dsteam
 def main():
     while True:
         try:
