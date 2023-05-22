@@ -3,6 +3,8 @@ import fnmatch
 import h5py
 import py4DSTEM
 import numpy as np
+import argparse
+from QuantumScope.tools.navigation.hdf5To4dsteam import *
 
 def get_file_list(filepath: str, file_extensions: list = ['*.h5', '*.hdf5']) -> list:
     """
@@ -139,40 +141,44 @@ def select_file(file_list):
         return None
     return file_list[file_index]
         
-def main(filepath, file_extensions):
-    # Check if inputs are valid
-    if not os.path.isdir(filepath):
-        raise FileNotFoundError("Invalid directory: " + filepath)
-    
-    # Get list of files
-    file_list = get_file_list(filepath, file_extensions)
-    print('File list:')
-    print(file_list)
 
-    # User selects file
+def main(filepath: str, file_extensions: list):
     while True:
-        selected_file = select_file(file_list)
-        if selected_file is None:
-            print("Exiting...")
-            break
-
-        # Load and visualize data for the selected file
-        full_file_path = os.path.join(filepath, selected_file)
-        loaded_data = explore_and_load_4DSTEM_data([full_file_path])  # Pass a list with a single file path
-        if loaded_data == 'change file':
-            continue
+        # Get list of files
         try:
-            visualize_4DSTEM_data(loaded_data)
-        except Exception as e:
-            print(f'An error occurred while trying to visualize the dataset: {e}')
+            file_list = get_file_list(filepath, file_extensions)
+            print('File list:')
+            print(file_list)
+        except FileNotFoundError as e:
+            print("Invalid directory. Please try again.")
+            continue
+
+        # User selects file
+        while True:
+            selected_file = select_file(file_list)
+            if selected_file is None:
+                print("Exiting...")
+                break
+
+            # Load and visualize data for the selected file
+            full_file_path = os.path.join(filepath, selected_file)
+            loaded_data = explore_and_load_4DSTEM_data([full_file_path])  # Pass a list with a single file path
+            if loaded_data == 'change file':
+                continue
+            try:
+                visualize_4DSTEM_data(loaded_data)
+            except Exception as e:
+                print(f'An error occurred while trying to visualize the dataset: {e}')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process 4DSTEM data.')
     parser.add_argument('--filepath', type=str, help='Path to the directory containing the data files.')
     parser.add_argument('--file_extensions', type=str, nargs='+', help='List of file extensions to include.')
     args = parser.parse_args()
-    
+
     main(args.filepath, args.file_extensions)
+
 
 # from QuantumScope.tools.navigation import hdf5To4dsteam
 # hdf5To4dsteam.main('/path/to/data', ['.dm3', '.dm4'])
