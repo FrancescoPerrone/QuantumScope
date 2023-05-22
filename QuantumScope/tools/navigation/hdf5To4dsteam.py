@@ -140,10 +140,7 @@ def select_file(file_list):
         return None
     return file_list[file_index]
 
-def main():
-    filepath = None
-    file_extensions = None
-
+def main(filepath, file_extensions):
     while True:
         try:
             if filepath is None:
@@ -181,4 +178,4 @@ def main():
             filepath = None
 
 if __name__ == "__main__":
-    main()
+    main(filepath=None, file_extensions=None)
